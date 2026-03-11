@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <sstream>
 
 class Contact
 {
@@ -13,7 +14,7 @@ public:
 	std::string nickname;
 	std::string number;
 	std::string secret;
-	
+
 };
 
 class PhoneBook

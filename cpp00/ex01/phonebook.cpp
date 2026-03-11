@@ -51,7 +51,8 @@ void search(PhoneBook *phonebook, int max)
 		std::cin >> nbr;
 		if (is_digit(nbr))
 			continue ;
-		nb = std::stoi(nbr);
+		std::stringstream ss(nbr);
+		ss >> nb;
 		if (nb < 0)
 		{
 			nb = 10;
