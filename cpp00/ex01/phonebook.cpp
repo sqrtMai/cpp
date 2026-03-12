@@ -12,7 +12,7 @@ int is_digit(std::string str){
 	return 0;
 }
 
-void search(PhoneBook *phonebook, int max)
+void search(PhoneBook *phonebook, int max, bool end)
 {
 	std::cout << std::setw(10) << "INDEX";
 	std::cout << "|";
@@ -24,19 +24,22 @@ void search(PhoneBook *phonebook, int max)
 
 	if (!max)
 		return (std::cout << std::endl, (void)1);
-	for (int i = 0; i < max; i++)
+	if (end)
+		max = 8;
+	for (int i = 0; max && i <= max; i++)
 	{
-		std::cout << std::right << std::setw(10) << i;
+		if (i < max)
+			std::cout << std::right << std::setw(10) << i;
 		if (phonebook->contact[i].first_name.length() > 10)
-			std::cout << std::right << std::setw(10) << phonebook->contact[i].first_name.substr(0, 9) << ". ";
+			std::cout << std::right << std::setw(10) << phonebook->contact[i].first_name.substr(0, 8) << ".";
 		else
 			std::cout << std::right <<  std::setw(10) << phonebook->contact[i].first_name;
 		if (phonebook->contact[i].last_name.length() > 10)
-			std::cout << std::right <<  std::setw(10) <<phonebook->contact[i].last_name.substr(0, 9) << ". ";
+			std::cout << std::right <<  std::setw(10) <<phonebook->contact[i].last_name.substr(0, 8) << ".";
 		else
 			std::cout << std::right <<  std::setw(10) <<phonebook->contact[i].last_name;
 		if (phonebook->contact[i].nickname.length() > 10)
-			std::cout << std::right <<   std::setw(10) <<phonebook->contact[i].nickname.substr(0, 9) << ". ";
+			std::cout << std::right <<   std::setw(10) <<phonebook->contact[i].nickname.substr(0, 8) << ".";
 		else
 			std::cout << std::right << std::setw(10) << phonebook->contact[i].nickname;
 		std::cout << std::endl;
@@ -45,7 +48,7 @@ void search(PhoneBook *phonebook, int max)
 	std::string nbr;
 	int nb = 10;
 
-	while (nb > max - 1)
+	while (max && nb >= max)
 	{
 		std::cout << "Please put a number (0 - " << max - 1 << ")" << std::endl;
 		std::cin >> nbr;
@@ -58,6 +61,8 @@ void search(PhoneBook *phonebook, int max)
 			nb = 10;
 		}
 	}
+	if (nb == 8)
+		nb = 7;
 	std::cout << "First name: " << phonebook->contact[nb].first_name << std::endl;
 	std::cout << "Last name: " << phonebook->contact[nb].last_name << std::endl;
 	std::cout << "Nickame: " << phonebook->contact[nb].nickname << std::endl;
@@ -66,12 +71,15 @@ void search(PhoneBook *phonebook, int max)
 
 }
 
-
-
-void add(PhoneBook *phonebook, int *i)
+void add(PhoneBook *phonebook, int *i, bool *end)
 {
 	Contact contact;
 
+	if (*i == 8)
+	{
+		*end = true;
+		(*i) = 0;
+	}
 	while (contact.first_name == "")
 	{
 		std::cout << "Contact FIRST NAME: ";
@@ -113,7 +121,7 @@ void add(PhoneBook *phonebook, int *i)
 	}
 	std::cout << std::endl;
 	phonebook->contact[*i] = contact;
-	if (*i < 7)
+	if (*i < 8)
 		(*i)++;
 }
 
@@ -122,7 +130,7 @@ int main(void)
 	PhoneBook phonebook;
 	std::string input;
 	int i;
-
+	bool end = false;
 	i = 0;
 	while (1)
 	{
@@ -130,11 +138,11 @@ int main(void)
 		std::getline(std::cin, input);
 		if (input == "ADD")
 		{
-			add(&phonebook, &i);
+			add(&phonebook, &i, &end);
 		}
 		else if (input == "SEARCH")
 		{
-			search(&phonebook, i);
+			search(&phonebook, i, end);
 		}
 		else if (input == "EXIT")
 			break ;
