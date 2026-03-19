@@ -39,17 +39,16 @@ int main(int argc, char **argv)
 	size_t i = 0;
 	size_t pos;
 
-	while (copy[i])
+	while (i < copy.length())
 	{
-		pos = copy.find(argv2, 0);
+		pos = copy.find(argv2, i);
 		if (pos != std::string::npos)
 		{
 			copy.erase(pos, argv2.length());
 			copy.insert(pos, argv3);
 			i = pos + argv3.length();
 		}
-		if (copy[i])
-			i++;
+		i++;
 	}
 	std::cout << copy << std::endl;
 	std::ofstream out("infile.replace");
