@@ -14,6 +14,7 @@ int is_digit(std::string str){
 
 void search(PhoneBook *phonebook, int max, bool end)
 {
+	(void)end;
 	std::cout << std::setw(10) << "INDEX";
 	std::cout << "|";
 	std::cout << std::setw(10) << "FIRST NAME";
@@ -24,8 +25,6 @@ void search(PhoneBook *phonebook, int max, bool end)
 
 	if (!max)
 		return (std::cout << std::endl, (void)1);
-	if (end)
-		max = 8;
 	for (int i = 0; max && i <= max; i++)
 	{
 		if (i < max)
@@ -62,8 +61,6 @@ void search(PhoneBook *phonebook, int max, bool end)
 			nb = 10;
 		}
 	}
-	if (nb == 8)
-		nb = 7;
 	std::cout << "First name: " << phonebook->contact[nb].first_name << std::endl;
 	std::cout << "Last name: " << phonebook->contact[nb].last_name << std::endl;
 	std::cout << "Nickame: " << phonebook->contact[nb].nickname << std::endl;
@@ -75,12 +72,7 @@ void search(PhoneBook *phonebook, int max, bool end)
 void add(PhoneBook *phonebook, int *i, bool *end)
 {
 	Contact contact;
-
-	if (*i == 8)
-	{
-		*end = true;
-		(*i) = 0;
-	}
+	(void)*end;
 	while (contact.first_name == "")
 	{
 		std::cout << "Contact FIRST NAME: ";
