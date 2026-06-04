@@ -10,8 +10,9 @@ private:
 	T *data;
 	size_t _size;
 
+
 public:
-	Array(/* args */);
+	Array();
 	Array(unsigned int n);
 	Array(const Array<T>& other);
 	Array<T>& operator=(const Array<T>& other);
@@ -37,7 +38,10 @@ template <typename T>
 Array<T>::~Array()
 {
 	if (this->data)
+	{
 		delete[] this->data;
+		this->data = 0;
+	}
 }
 
 template <typename T>
@@ -52,13 +56,13 @@ Array<T>& Array<T>::operator=(const Array<T>& other)
 	if (this == &other)
 		return *this;
 
-	delete[] data;
+	delete[] this->data;
 
 	this->_size = other._size;
-	data = new T[this->_size];
+	this->data = new T[this->_size];
 
 	for (size_t i = 0; i < this->_size; i++)
-		data[i] = other.data[i];
+		this->data[i] = other.data[i];
 
 	return *this;
 }
@@ -76,7 +80,7 @@ Array<T>::Array(const Array<T>& other)
 template <typename T>
 T &Array<T>::operator[](size_t pos)
 {
-	if (pos > this->_size)
+	if (pos >= this->_size)
 	{
 		throw std::exception();
 	}

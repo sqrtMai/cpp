@@ -1,5 +1,5 @@
 NAME = template
-SRC = main.cpp whatever.cpp
+SRC = main.cpp
 OBJ_DIR = obj
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
 CC = c++ -std=c++98

@@ -1,10 +1,10 @@
-NAME = easyfind
-SRC = main.cpp
+NAME = span
+SRC = main.cpp Span.cpp
 OBJ_DIR = obj
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
 CC = c++ -std=c++98
 CFLAGS = -Wall -Wextra -Werror
-HEADER = easyfind.hpp
+HEADER = Span.hpp
 
 all: $(NAME)
 

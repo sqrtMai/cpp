@@ -3,6 +3,7 @@
 
 #include "AForm.hpp"
 #include "Bureaucrat.hpp"
+#include <cstdlib>
 
 class RobotomyRequestForm : public AForm
 {
@@ -15,7 +16,7 @@ public:
 	~RobotomyRequestForm();
 
 	void execute(Bureaucrat &someone);
-	
+
 };
 
 std::ostream& operator<<(std::ostream& out, const AForm& b);

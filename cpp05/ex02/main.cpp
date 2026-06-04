@@ -9,8 +9,8 @@ int main(void)
 	Bureaucrat const *Joe = new Bureaucrat("Joe", 2);
 	Bureaucrat const *Low = new Bureaucrat("Low", 150);
 	AForm  *Shrubbery = new ShrubberyCreationForm("Mai");
-	 AForm  *Robotomy = new RobotomyRequestForm("Mai");
-	 AForm  *Presidential = new PresidentialPardonForm("Mai");
+	AForm  *Robotomy = new RobotomyRequestForm("Mai");
+	AForm  *Presidential = new PresidentialPardonForm("Mai");
 
 	std::cout << std::endl << std::endl << std::endl << std::endl << std::endl << std::endl;
 

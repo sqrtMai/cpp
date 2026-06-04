@@ -1,10 +1,10 @@
-NAME = easyfind
+NAME = mutated_abomination
 SRC = main.cpp
 OBJ_DIR = obj
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
 CC = c++ -std=c++98
 CFLAGS = -Wall -Wextra -Werror
-HEADER = easyfind.hpp
+HEADER = MutantStack.hpp
 
 all: $(NAME)
 

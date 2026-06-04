@@ -2,6 +2,9 @@
 #define EASYFIND_HPP
 
 #include <algorithm>
+#include <iostream>
+#include <vector>
+#include <deque>
 
 template <typename T>
 

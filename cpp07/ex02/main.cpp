@@ -1,13 +1,14 @@
 #include "Array.hpp"
-
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 
 #define MAX_VAL 750
 int main(int, char**)
 {
+    srand(time(NULL));
     Array<int> numbers(MAX_VAL);
     int* mirror = new int[MAX_VAL];
-    srand(time(NULL));
     for (int i = 0; i < MAX_VAL; i++)
     {
         const int value = rand();

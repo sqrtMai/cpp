@@ -1,10 +1,10 @@
-NAME = easyfind
-SRC = main.cpp
+NAME = btc
+SRC = main.cpp BitcoinExchange.cpp
 OBJ_DIR = obj
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
 CC = c++ -std=c++98
 CFLAGS = -Wall -Wextra -Werror
-HEADER = easyfind.hpp
+HEADER = BitcoinExchange.hpp
 
 all: $(NAME)
 
