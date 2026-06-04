@@ -16,7 +16,4 @@ int main(void)
 
 	std::cout << "Data nbr = " << data->nbr << std::endl;
 	std::cout << "Data address = " << data << std::endl;
-
-
-
 }
