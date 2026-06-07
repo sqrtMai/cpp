@@ -5,9 +5,24 @@ Span::Span(unsigned int N) : max(N), current(0)
 	//v.reserve(N);
 }
 
+Span::Span(const Span &other)
+{
+	*this = other;
+}
+
+Span& Span::operator=(const Span &other)
+{
+	if (this == &other)
+		return *this;
+	this->v = other.v;
+	this->max = other.max;
+	this->current = other.current;
+}
+
 Span::~Span()
 {
 }
+
 
 void Span::addNumber(int nb)
 {

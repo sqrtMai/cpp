@@ -1,10 +1,10 @@
-NAME = btc
-SRC = main.cpp BitcoinExchange.cpp
+NAME = RPN
+SRC = main.cpp RPN.cpp
 OBJ_DIR = obj
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
 CC = c++ -std=c++98
 CFLAGS = -Wall -Wextra -Werror
-HEADER = BitcoinExchange.hpp
+HEADER = RPN.hpp
 
 all: $(NAME)
 

@@ -21,18 +21,4 @@ public:
 	void addNumber(int nb);
 };
 
-Span::Span(const Span &other)
-{
-	*this = other;
-}
-
-Span& Span::operator=(const Span &other)
-{
-	if (this == &other)
-		return *this;
-	this->v = other.v;
-	this->max = other.max;
-	this->current = other.current;
-}
-
 #endif
