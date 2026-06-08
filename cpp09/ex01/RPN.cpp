@@ -41,7 +41,7 @@ void RPN::do_op(std::stack<int, std::list<int>> &s, char op)
 	if (op == '+')
 		s.push(a + b);
 	if (op == '-')
-		s.push(a - b);
+		s.push(a - b); //TODO DIVISION PAR ZERO
 	if (op == '/')
 		s.push(a / b);
 	if (op == '*')
