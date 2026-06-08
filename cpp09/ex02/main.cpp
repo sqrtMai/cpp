@@ -48,17 +48,49 @@ std::vector<int> vAlgo(std::vector<int> input)
 		losers.push_back(pairs[i].first);
 	}
 
-	//winners = vAlgo(winners);
+	winners = vAlgo(winners);
+
+	std::vector<int>::iterator it;
+	std::vector<int> jacob;
+	std::vector<int> order;
+	std::vector<bool> inserted(losers.size(), false);
+
+
+	jacob.push_back(0);
+	jacob.push_back(1);
+
+	while (jacob.back() < losers.size())
+		jacob.push_back(jacob[jacob.size() - 1] + 2 * jacob[jacob.size() - 2]);
 
 	for (size_t i = 0; i < losers.size(); i++)
-		winners.push_back(losers[i]);
+	{
+		it = std::lower_bound(winners.begin(), winners.end(), losers[i]);
+		winners.insert(it, losers[i]);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if (remainer >= 0)
+	{
+		it = std::lower_bound(winners.begin(), winners.end(), remainer);
+		winners.insert(it, remainer);
+	}
 
 	for (size_t i = 0; i < winners.size(); i++)
 	{
 		std::cout << winners[i] << " - ";
 	}
 	std::cout << std::endl;
-	(void)remainer;
 
 	return winners;
 }
