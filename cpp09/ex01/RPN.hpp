@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include <stack>
+#include <list>
 #include <ctype.h>
 
 class RPN
 {
 private:
 	int check_operator(char op);
-	void do_op(std::stack <int> &s, char op);
+	void do_op(std::stack<int, std::list<int>> &s, char op);
 public:
 	RPN();
 	RPN(const RPN &other);

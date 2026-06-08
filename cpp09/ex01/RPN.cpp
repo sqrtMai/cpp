@@ -33,7 +33,7 @@ int RPN::check_operator(char op)
 }
 
 
-void RPN::do_op(std::stack <int> &s, char op)
+void RPN::do_op(std::stack<int, std::list<int>> &s, char op)
 {
 	int b = s.top(); s.pop();
 	int a = s.top(); s.pop();
@@ -51,7 +51,7 @@ void RPN::do_op(std::stack <int> &s, char op)
 
 int RPN::execute(char **argv)
 {
-	std::stack<int> s;
+	std::stack<int, std::list<int>> s;
 	std::string args(argv[1]);
 
 	for (size_t i = 0; i < args.length(); i++)
