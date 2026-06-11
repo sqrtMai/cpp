@@ -7,6 +7,7 @@
 #include <string>
 #include <cctype>
 #include <cstdlib>
+#include <algorithm>
 
 
 typedef struct s_link
