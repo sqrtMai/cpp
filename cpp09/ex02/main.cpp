@@ -73,10 +73,13 @@ void swapBlock(std::vector<std::pair<int, int> >::iterator &first_pair, std::vec
 
 std::vector<std::pair<int, int> >::iterator findBigger(int nb, std::vector<std::pair<int, int> > &set, int level)
 {
-	for (size_t i = 0; i + (size_t)level < set.size(); i+=level)
+	for (size_t i = 0; i < set.size(); i+=level)
 	{
 		if (nb < set[i].first)
+		{
+			//std::cout << nb << " / " << set[i].first << std::endl;
 			return set.begin() + i;
+		}
 	}
 	return set.end();
 }
@@ -88,7 +91,7 @@ std::vector<std::pair<int, int> > setLevelBack(std::vector<std::pair<int, int> >
 
 	for (size_t i = 0; i < set.size(); i++)
 	{
-		for (size_t j = i; j < old.size(); j++)
+		for (size_t j = 0; j < old.size(); j++)
 		{
 			if (old[j].first == set[i].first)
 				set[i].second = old[j].second;
@@ -97,7 +100,7 @@ std::vector<std::pair<int, int> > setLevelBack(std::vector<std::pair<int, int> >
 	return set;
 }
 
-std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, int level)
+std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, std::vector<std::pair<int, int> > &remainer, int level)
 {
 	int pends_lvl = level;
 	level *= 2;
@@ -106,11 +109,21 @@ std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, in
 	std::vector<std::pair<int, int> >::iterator found;
 	size_t pos;
 
+	if (remainer.size() >= 1)
+	{
+		found = findBigger(remainer[0].first, set, level);
+		pos =  found - set.begin();
+		set.insert(
+					found,
+					remainer.begin(),
+					remainer.end());
+		remainer.clear();
+	}
+
 	for (size_t i = 0; i < set.size(); i += pends_lvl)
 	{
 		if (set[i].second == pends_lvl)
 		{
-			//std::cout << set[i].first << std::endl;
 			for (int j = 0; j < pends_lvl; j++)
 			{
 				temp.push_back(set[i + j]);
@@ -122,6 +135,8 @@ std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, in
 				set.erase(set.begin() + i);
 			}
 			found = findBigger(temp[0].first, set, pends_lvl);
+			// std::cout << temp[0].first << std::endl;
+			// std::cout << " " << found[0].first << std::endl;
 			pos =  found - set.begin();
 			set.insert(
 					found,
@@ -131,17 +146,53 @@ std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, in
 		}
 		temp.clear();
 		set = setLevelBack(set, old_smaller, pends_lvl);
+		old_smaller.clear();
 	}
+
 	return set;
 }
 
-std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set)
+size_t getMainSize(std::vector<std::pair<int, int> > &set, int level)
+{
+	size_t len = 0;
+
+	for (size_t i = 0; i < set.size(); i++)
+	{
+		if (set[i].second == level)
+			len++;
+	}
+	return len;
+}
+
+void insertRemainer(std::vector<std::pair<int, int> > &set, std::vector<std::pair<int, int> > &remainer, int level)
+{
+	size_t i = set.size() - 1;
+	for (; level > 0; level--)
+	{
+		remainer.insert(remainer.begin(), set[i--]);
+		set.pop_back();
+	}
+
+	std::cout << "remainer: ";
+	for (size_t i = 0; i < remainer.size(); i++)
+	{
+		std::cout << remainer[i].first << " - ";
+	}
+	std::cout << std::endl;
+}
+
+std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set, std::vector<std::pair<int, int> > &remainer)
 {
 
 	std::vector<std::pair<int, int> >::iterator first_pair;
 	std::vector<std::pair<int, int> >::iterator side_pair;
 
 	int level = find_current_level(set);
+
+	if (getMainSize(set, level) % 2)
+	{
+		insertRemainer(set, remainer, level);
+	}
 
 	for (size_t i = 0; i < set.size(); i += level)
 	{
@@ -150,9 +201,9 @@ std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set)
 			std::vector<std::pair<int, int> >::iterator first_pair = set.begin() + i;
 			side_pair = find_pair(set, set.begin() + i, level); //ça peut juste être set.begin() + i + level;
 			if (side_pair == set.end())
-				break;
+				return set;
 
-			if (level >= set.size() / 2)
+			if ((size_t)level >= (set.size() / 2))
 			{
 				if ((*first_pair).first > (*side_pair).first)
 				{
@@ -181,10 +232,13 @@ std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set)
 	{
 		std::cout << "(" << set[i].first << ", " << set[i].second << ") - ";
 	}
+
 	std::cout << std::endl;
 
 
-	set = vAlgo(set);
+	set = vAlgo(set, remainer);
+	set = jsp(set, remainer, level);
+
 	return set;
 }
 
@@ -200,7 +254,7 @@ int main(int argc, char **argv)
 		return 1;
 
 	std::vector<std::pair<int, int> > input;
-
+	std::vector<std::pair<int, int> > remainer;
 	for (size_t i = 1; argv[i]; i++)
 	{
 		std::pair<int, int> p;
@@ -215,22 +269,30 @@ int main(int argc, char **argv)
 	{
 		std::cout << "(" << input[i].first << ", " << input[i].second << ") - ";
 	}
-	std::cout << std::endl;
+	std::cout << std::endl << std::endl;
 
-	input = vAlgo(input);
+	input = vAlgo(input, remainer);
+
+
+
+	std::cout << std::endl << std::endl;
+	std::cout << "result: " << std::endl;
+	std::vector<int> v;
+
 	for (size_t i = 0; i < input.size(); i++)
 	{
 		std::cout << "(" << input[i].first << ", " << input[i].second << ") - ";
+		v.push_back(input[i].first);
 	}
 	std::cout << std::endl;
-	input = jsp(input, 2);
-	input = jsp(input, 1);
 
-	for (size_t i = 0; i < input.size(); i++)
-	{
-		std::cout << "(" << input[i].first << ", " << input[i].second << ") - ";
-	}
-	std::cout << std::endl;
+
+
+
+    if (std::is_sorted(v.begin(), v.end()))
+        std::cout << "sorted\n";
+    else
+        std::cout << "not sorted\n";
 
 }
 
