@@ -111,7 +111,7 @@ std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, st
 
 	if (remainer.size() >= 1)
 	{
-		found = findBigger(remainer[0].first, set, level);
+		found = findBigger(remainer[0].first, set, 1);
 		pos =  found - set.begin();
 		set.insert(
 					found,
@@ -181,11 +181,13 @@ void insertRemainer(std::vector<std::pair<int, int> > &set, std::vector<std::pai
 	std::cout << std::endl;
 }
 
-std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set, std::vector<std::pair<int, int> > &remainer)
+std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set)
 {
 
 	std::vector<std::pair<int, int> >::iterator first_pair;
 	std::vector<std::pair<int, int> >::iterator side_pair;
+
+	std::vector<std::pair<int, int> > remainer;
 
 	int level = find_current_level(set);
 
@@ -209,7 +211,7 @@ std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set, 
 				{
 					swapBlock(first_pair, side_pair);
 				}
-				return set;
+				return set = jsp(set, remainer, level);
 			}
 			if ((*first_pair).first < (*side_pair).first)
 			{
@@ -236,7 +238,7 @@ std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set, 
 	std::cout << std::endl;
 
 
-	set = vAlgo(set, remainer);
+	set = vAlgo(set);
 	set = jsp(set, remainer, level);
 
 	return set;
@@ -271,7 +273,7 @@ int main(int argc, char **argv)
 	}
 	std::cout << std::endl << std::endl;
 
-	input = vAlgo(input, remainer);
+	input = vAlgo(input);
 
 
 

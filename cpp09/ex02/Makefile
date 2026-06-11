@@ -24,4 +24,4 @@ fclean: clean
 re : fclean all
 
 run: all
-	./PmergeMe 34 1 102 5 6 45 2 10 7
+	./PmergeMe 1 2 3 4 5 6 7
