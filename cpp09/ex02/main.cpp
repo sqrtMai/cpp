@@ -62,78 +62,77 @@ void swapBlock(std::vector<std::pair<int, int> >::iterator &first_pair, std::vec
 }
 
 
-size_t jacobsthal(size_t n)
+// size_t jacobsthal(size_t n)
+// {
+//     if (n == 0) return 0;
+//     if (n == 1) return 1;
+//     return jacobsthal(n - 1) + 2 * jacobsthal(n - 2);
+// }
+
+
+
+std::vector<std::pair<int, int> >::iterator findBigger(int nb, std::vector<std::pair<int, int> > &set, int level)
 {
-    if (n == 0) return 0;
-    if (n == 1) return 1;
-    return jacobsthal(n - 1) + 2 * jacobsthal(n - 2);
+	for (size_t i = 0; i + (size_t)level < set.size(); i+=level)
+	{
+		if (nb < set[i].first)
+			return set.begin() + i;
+	}
+	return set.end();
 }
 
 
-std::vector<std::pair<int,int> > insertionPhase(std::vector<std::pair<int,int> >& set)
+std::vector<std::pair<int, int> > setLevelBack(std::vector<std::pair<int, int> > &set, std::vector<std::pair<int, int> > &old, int pends_lvl)
 {
-    int level = find_current_level(set);
+	size_t j = 0;
 
-    std::vector<int> main_chain;
-    std::vector<std::pair<int,int> > pend;
+	for (size_t i = 0; i < set.size(); i++)
+	{
+		for (size_t j = i; j < old.size(); j++)
+		{
+			if (old[j].first == set[i].first)
+				set[i].second = old[j].second;
+		}
+	}
+	return set;
+}
 
-    // b1 = loser du premier winner, inséré gratuitement
-    main_chain.push_back(set[level / 2].first);
+std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, int level)
+{
+	int pends_lvl = level;
+	level *= 2;
+	std::vector<std::pair<int, int> > temp;
+	std::vector<std::pair<int, int> > old_smaller;
+	std::vector<std::pair<int, int> >::iterator found;
+	size_t pos;
 
-    // Tous les winners (second == level) → main_chain
-    // Leur loser direct (second == level/2) → pend avec leur borne
-    for (size_t i = 0; i < set.size(); i += level)
-    {
-        main_chain.push_back(set[i].first);
-        if (i > 0)  // b1 déjà ajouté
-            pend.push_back(std::make_pair(set[i + level/2].first, set[i].first));
-    }
-
-    // Les sous-losers (second < level/2) → aussi dans pend
-    // On les cherche par leur second
-    for (size_t i = 0; i < set.size(); i++)
-    {
-        if (set[i].second < level / 2 && set[i].second >= 1)
-        {
-            // Trouver le winner qui le couvre
-            // C'est le premier élément de second==level dans son bloc
-            size_t block = (i / level) * level;
-            int bound = set[block].first;
-            pend.push_back(std::make_pair(set[i].first, bound));
-        }
-    }
-
-    size_t jk = 2;
-
-    while (!pend.empty())
-    {
-        size_t j_prev = jacobsthal(jk - 1);
-        size_t j_curr = jacobsthal(jk);
-        size_t group_size = j_curr - j_prev;
-        if (group_size > pend.size())
-            group_size = pend.size();
-
-        for (size_t i = group_size; i > 0; i--)
-        {
-            int val      = pend[i - 1].first;
-            int bound_val = pend[i - 1].second;
-
-            std::vector<int>::iterator bound_it = std::find(main_chain.begin(), main_chain.end(), bound_val);
-            ++bound_it;
-
-            std::vector<int>::iterator pos = std::lower_bound(main_chain.begin(), bound_it, val);
-            main_chain.insert(pos, val);
-        }
-
-        pend.erase(pend.begin(), pend.begin() + group_size);
-        jk++;
-    }
-
-    std::vector<std::pair<int,int> > result;
-    for (size_t i = 0; i < main_chain.size(); i++)
-        result.push_back(std::make_pair(main_chain[i], 1));
-
-    return result;
+	for (size_t i = 0; i < set.size(); i += pends_lvl)
+	{
+		if (set[i].second == pends_lvl)
+		{
+			//std::cout << set[i].first << std::endl;
+			for (int j = 0; j < pends_lvl; j++)
+			{
+				temp.push_back(set[i + j]);
+			}
+			old_smaller.push_back(set[i]);
+			temp[0].second = level;
+			for (int j = 0; j < pends_lvl; j++)
+			{
+				set.erase(set.begin() + i);
+			}
+			found = findBigger(temp[0].first, set, pends_lvl);
+			pos =  found - set.begin();
+			set.insert(
+					found,
+					temp.begin(),
+					temp.end());
+				//if (i + j < set.size())
+		}
+		temp.clear();
+		set = setLevelBack(set, old_smaller, pends_lvl);
+	}
+	return set;
 }
 
 std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set)
@@ -186,7 +185,6 @@ std::vector<std::pair<int, int> > vAlgo(std::vector<std::pair<int, int> > &set)
 
 
 	set = vAlgo(set);
-
 	return set;
 }
 
@@ -220,10 +218,17 @@ int main(int argc, char **argv)
 	std::cout << std::endl;
 
 	input = vAlgo(input);
-	input = insertionPhase(input);
 	for (size_t i = 0; i < input.size(); i++)
 	{
-		std::cout << "(" << input[i].first <<  ") - ";
+		std::cout << "(" << input[i].first << ", " << input[i].second << ") - ";
+	}
+	std::cout << std::endl;
+	input = jsp(input, 2);
+	input = jsp(input, 1);
+
+	for (size_t i = 0; i < input.size(); i++)
+	{
+		std::cout << "(" << input[i].first << ", " << input[i].second << ") - ";
 	}
 	std::cout << std::endl;
 
