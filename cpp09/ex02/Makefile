@@ -24,4 +24,4 @@ fclean: clean
 re : fclean all
 
 run: all
-	valgrind ./PmergeMe `shuf -i 1-1000 -n 3000 | tr "\n" " "`
+	valgrind ./PmergeMe 1 2 3 4 5 6 7 8

@@ -162,10 +162,6 @@ std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, st
 {
 	int pends_lvl = level / 2;
 
-	std::cout << "MAIN CHAIN LEVEL = " << level << std::endl;
-	// if  (level == 1)
-	// 	return set;
-	//level *= 2;
 	std::vector<std::pair<int, int> > temp;
 	std::vector<std::pair<int, int> > old_smaller;
 	std::vector<std::pair<int, int> >::iterator found;
@@ -186,24 +182,12 @@ std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, st
 					remainer.end());
 		remainer.clear();
 	}
-
-	std::cout << "FOR PENDS LEVEL : " << pends_lvl << std::endl;
-
 	for (size_t i = 0; i < set.size(); i++)
 	{
 		if (set[i].second == pends_lvl)
-		{
 			pends.push_back(i);
-		}
 	}
-
-	std::cout << "pends level : " << pends_lvl << std::endl;
-	std::cout << "pends size : " << pends.size() << std::endl;
 	std::vector<int> order = jacob(pends.size());
-	std::cout << "order size : " << order.size() << std::endl;
-
-	for (size_t i = 0; i < order.size(); i++)
-	std::cout << order[i] << " " << std::endl;
 
 	for (size_t i = 0; i < pends.size(); i++)
 	{
@@ -218,14 +202,15 @@ std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, st
 		for (int j = 0; j < pends_lvl; j++)
 			set.erase(set.begin() + idx);
 
+		for (size_t j = i + 1; j < pends.size(); j++)
+		{
+			if (pends[order[j]] > idx)
+				pends[order[j]] -= pends_lvl;
+		}
+
 		found = findBigger(temp[0].first, set, level, set[idx - pends_lvl].first);
-		// std::cout << temp[0].first << std::endl;
-		// std::cout << " " << found[0].first << std::endl;
-		set.insert(
-				found,
-				temp.begin(),
-				temp.end());
-			//if (i + j < set.size())
+		set.insert(found, temp.begin(), temp.end());
+
 		pos =  found - set.begin();
 		for (size_t k = i + 1; k < pends.size(); k++)
 			if (pends[order[k]] >= pos)
