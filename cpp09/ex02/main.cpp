@@ -61,28 +61,41 @@ void swapBlock(std::vector<std::pair<int, int> >::iterator &first_pair, std::vec
 	}
 }
 
-
-// size_t jacobsthal(size_t n)
-// {
-//     if (n == 0) return 0;
-//     if (n == 1) return 1;
-//     return jacobsthal(n - 1) + 2 * jacobsthal(n - 2);
-// }
-
-
-
-std::vector<std::pair<int, int> >::iterator findBigger(int nb, std::vector<std::pair<int, int> > &set, int level)
+std::vector<std::pair<int, int> >::iterator findBigger(int nb, std::vector<std::pair<int, int> > &set, int level, int winner)
 {
-	for (size_t i = 0; i < set.size(); i+=level)
+	std::vector<size_t> mainIndex;
+
+	for (size_t i = 0; i < set.size(); i++)
 	{
-		if (nb < set[i].first)
-		{
-			//std::cout << nb << " / " << set[i].first << std::endl;
-			return set.begin() + i;
-		}
+		if (set[i].second >= level)
+			mainIndex.push_back(i);
+		if (set[i].first == winner)
+			break ;
 	}
-	return set.end();
+
+	if (mainIndex.size() == 1)
+		return set.begin() + mainIndex[0];
+
+    size_t left = 0;
+    size_t right = mainIndex.size();
+
+    while (left < right)
+    {
+        size_t mid = left + (right - left) / 2;
+
+        if (set[mainIndex[mid]].first < nb)
+            left = mid + 1;
+        else
+            right = mid;
+    }
+
+    if (left >= mainIndex.size())
+        return set.end();
+
+    return set.begin() + mainIndex[left];
 }
+
+
 
 
 std::vector<std::pair<int, int> > setLevelBack(std::vector<std::pair<int, int> > &set, std::vector<std::pair<int, int> > &old, int pends_lvl)
@@ -100,18 +113,72 @@ std::vector<std::pair<int, int> > setLevelBack(std::vector<std::pair<int, int> >
 	return set;
 }
 
+
+std::vector<int> jacob(size_t size)
+{
+	std::vector<long long> jacobstahl;
+	std::vector<int> order;
+	std::vector<int> current;
+
+	jacobstahl.push_back(0);
+	jacobstahl.push_back(1);
+
+	for (int i = 2; jacobstahl[i - 1] < size; i++)
+		jacobstahl.push_back(jacobstahl[i - 1] + 2 * jacobstahl[i - 2]);
+
+	if (size > 2)
+		jacobstahl.erase(jacobstahl.begin() + 2);
+
+
+	int i;
+	int prev;
+	int curr;
+	for (int i = 1; i < jacobstahl.size(); i++)
+	{
+		prev = jacobstahl[i - 1];
+		curr = jacobstahl[i];
+		if (i == 1)
+		{
+			order.push_back(prev);
+			order.push_back(curr);
+		}
+		else
+		{
+			for (; curr > prev; curr--)
+			{
+				if (curr >= size)
+					continue;
+				order.push_back(curr);
+			}
+		}
+	}
+
+	while (size != order.size())
+		order.erase(order.begin() + size);
+	return order;
+}
+
 std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, std::vector<std::pair<int, int> > &remainer, int level)
 {
-	int pends_lvl = level;
-	level *= 2;
+	int pends_lvl = level / 2;
+
+	std::cout << "MAIN CHAIN LEVEL = " << level << std::endl;
+	// if  (level == 1)
+	// 	return set;
+	//level *= 2;
 	std::vector<std::pair<int, int> > temp;
 	std::vector<std::pair<int, int> > old_smaller;
 	std::vector<std::pair<int, int> >::iterator found;
+	std::vector<size_t> pends;
+
 	size_t pos;
+
 
 	if (remainer.size() >= 1)
 	{
-		found = findBigger(remainer[0].first, set, 1);
+		old_smaller.push_back(remainer[0]);
+		remainer[0].second = level;
+		found = findBigger(remainer[0].first, set, level, -1);
 		pos =  found - set.begin();
 		set.insert(
 					found,
@@ -120,34 +187,55 @@ std::vector<std::pair<int, int> > jsp(std::vector<std::pair<int, int> > &set, st
 		remainer.clear();
 	}
 
-	for (size_t i = 0; i < set.size(); i += pends_lvl)
+	std::cout << "FOR PENDS LEVEL : " << pends_lvl << std::endl;
+
+	for (size_t i = 0; i < set.size(); i++)
 	{
 		if (set[i].second == pends_lvl)
 		{
-			for (int j = 0; j < pends_lvl; j++)
-			{
-				temp.push_back(set[i + j]);
-			}
-			old_smaller.push_back(set[i]);
-			temp[0].second = level;
-			for (int j = 0; j < pends_lvl; j++)
-			{
-				set.erase(set.begin() + i);
-			}
-			found = findBigger(temp[0].first, set, pends_lvl);
-			// std::cout << temp[0].first << std::endl;
-			// std::cout << " " << found[0].first << std::endl;
-			pos =  found - set.begin();
-			set.insert(
-					found,
-					temp.begin(),
-					temp.end());
-				//if (i + j < set.size())
+			pends.push_back(i);
 		}
-		temp.clear();
-		set = setLevelBack(set, old_smaller, pends_lvl);
-		old_smaller.clear();
 	}
+
+	std::cout << "pends level : " << pends_lvl << std::endl;
+	std::cout << "pends size : " << pends.size() << std::endl;
+	std::vector<int> order = jacob(pends.size());
+	std::cout << "order size : " << order.size() << std::endl;
+
+	for (size_t i = 0; i < order.size(); i++)
+	std::cout << order[i] << " " << std::endl;
+
+	for (size_t i = 0; i < pends.size(); i++)
+	{
+		int idx = pends[order[i]];
+
+		for (int j = 0; j < pends_lvl; j++)
+			temp.push_back(set[idx + j]);
+
+		old_smaller.push_back(set[idx]);
+		temp[0].second = level;
+
+		for (int j = 0; j < pends_lvl; j++)
+			set.erase(set.begin() + idx);
+
+		found = findBigger(temp[0].first, set, level, set[idx - pends_lvl].first);
+		// std::cout << temp[0].first << std::endl;
+		// std::cout << " " << found[0].first << std::endl;
+		set.insert(
+				found,
+				temp.begin(),
+				temp.end());
+			//if (i + j < set.size())
+		pos =  found - set.begin();
+		for (size_t k = i + 1; k < pends.size(); k++)
+			if (pends[order[k]] >= pos)
+				pends[order[k]] += pends_lvl;
+		temp.clear();
+	}
+
+
+	set = setLevelBack(set, old_smaller, pends_lvl);
+
 
 	return set;
 }
@@ -158,7 +246,7 @@ size_t getMainSize(std::vector<std::pair<int, int> > &set, int level)
 
 	for (size_t i = 0; i < set.size(); i++)
 	{
-		if (set[i].second == level)
+		if (set[i].second >= level)
 			len++;
 	}
 	return len;
@@ -295,6 +383,14 @@ int main(int argc, char **argv)
         std::cout << "sorted\n";
     else
         std::cout << "not sorted\n";
+
+	// std::vector<int> jaco = jacob(128);
+	// for (size_t i = 0; i < jaco.size(); i++)
+	// {
+	// 	std::cout << jaco[i] << " ";
+	// }
+
+	std::cout << std::endl;
 
 }
 
