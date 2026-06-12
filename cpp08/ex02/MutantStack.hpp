@@ -2,6 +2,7 @@
 #define MUTANT_STACK
 
 #include <stack>
+#include <list>
 
 template <typename T>
 class MutantStack : public std::stack<T>
@@ -11,7 +12,7 @@ private:
 public:
 	typedef typename std::stack<T>::container_type::iterator iterator;
 	MutantStack();
-	MutantStack(const MutantStack &other);
+	MutantStack(const MutantStack<T> &other);
 	MutantStack<T>& operator=(const MutantStack<T> &other);
 	~MutantStack();
 
@@ -38,7 +39,7 @@ MutantStack<T>::MutantStack(const MutantStack<T> &other)
 }
 
 template <typename T>
-MutantStack<T>& MutantStack<T>::operator=(const MutantStack &other)
+MutantStack<T>& MutantStack<T>::operator=(const MutantStack<T> &other)
 {
 	if (this == &other)
 		return *this;

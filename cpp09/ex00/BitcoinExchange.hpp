@@ -19,7 +19,8 @@ private:
 	std::string trim_space(std::string line);
 	std::map<std::string, double> fillMap(void);
 	std::map<std::string, double>::iterator findNearestDate(std::map<std::string, double>& data, const std::string& date);
-
+	bool Bisextiloupa(int year);
+	bool isValidDate2(double year, double month, double day);
 public:
 	BitcoinExchange();
 	BitcoinExchange(const BitcoinExchange &other);

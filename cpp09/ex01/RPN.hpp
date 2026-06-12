@@ -10,7 +10,7 @@ class RPN
 {
 private:
 	int check_operator(char op);
-	void do_op(std::stack<int, std::list<int>> &s, char op);
+	void do_op(std::stack<double, std::list<double> > &s, char op);
 public:
 	RPN();
 	RPN(const RPN &other);

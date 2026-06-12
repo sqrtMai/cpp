@@ -17,6 +17,7 @@ Span& Span::operator=(const Span &other)
 	this->v = other.v;
 	this->max = other.max;
 	this->current = other.current;
+	return *this;
 }
 
 Span::~Span()

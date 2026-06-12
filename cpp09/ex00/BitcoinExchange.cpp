@@ -109,13 +109,53 @@ void BitcoinExchange::trim_dash(std::string date, std::string &year, std::string
 
 }
 
+
+bool BitcoinExchange::Bisextiloupa(int year)
+{
+	if (year % 400 == 0)
+		return true;
+	if (year % 100 == 0)
+		return false;
+	if (year % 4 == 0)
+		return true;
+	return false;
+}
+
+bool BitcoinExchange::isValidDate2(double year, double month, double day)
+{
+	int y = static_cast<int>(year);
+	int m = static_cast<int>(month);
+	int d = static_cast<int>(day);
+
+	if (y < 0 || m < 1 || m > 12 || d < 1)
+		return false;
+
+	int maxDay;
+
+	if (m == 2)
+	{
+		if (Bisextiloupa(y))
+			maxDay = 29;
+		else
+			maxDay = 28;
+	}
+	else if (m == 4 || m == 6 || m == 9 || m == 11)
+		maxDay = 30;
+	else
+		maxDay = 31;
+
+	if (d > maxDay)
+		return false;
+
+	return true;
+}
 int BitcoinExchange::check_date(std::string date, std::string year, std::string month, std::string day)
 {
 	char *end;
 
 	if (day.length() != 2 || month.length() != 2 || year.length() != 4)
 	{
-		//std::cout << "Error: bad date -input- => " << day << std::endl;
+		std::cout << "Error: bad date -input- => " << day << std::endl;
 		return 1;
 	}
 
@@ -123,25 +163,29 @@ int BitcoinExchange::check_date(std::string date, std::string year, std::string 
 	if (*end != 0)
 	{
 			std::cout << "Error: bad date input => " << date << std::endl;
-			return 0;
+			return 1;
 	}
-	(void)dYear;
 	double dMonth = strtod(month.c_str(), &end);
 	if (*end != 0)
 	{
 			std::cout << "Error: bad date input => " << date << std::endl;
-			return 0;
+			return 1;
 	}
-	(void)dMonth;
 
 	double dDay = strtod(day.c_str(), &end);
 	if (*end != 0)
 	{
 			std::cout << "Error: bad date input => " << date << std::endl;
-			return 0;
+			return 1;
 	}
-	(void)dDay;
+
+	if (isValidDate2(dYear, dMonth, dDay) == false)
+	{
+		std::cout << "Error: bad date input => " << date << std::endl;
+		return 1;
+	}
 	return 0;
+
 }
 
 int BitcoinExchange::isValidDate(std::string &date, bool type)

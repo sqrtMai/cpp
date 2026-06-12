@@ -2,7 +2,7 @@ NAME = PmergeMe
 SRC = main.cpp PmergeMe.cpp
 OBJ_DIR = obj
 OBJ = $(SRC:%.c=$(OBJ_DIR)/%.o)
-CC = c++
+CC = c++ -std=c++98
 CFLAGS =
 HEADER = PmergeMe.hpp
 
@@ -22,6 +22,3 @@ fclean: clean
 	rm -rf $(NAME)
 
 re : fclean all
-
-run: all
-	valgrind ./PmergeMe 1 2 3 4 5 6 7 8

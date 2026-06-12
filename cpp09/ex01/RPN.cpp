@@ -33,11 +33,13 @@ int RPN::check_operator(char op)
 }
 
 
-void RPN::do_op(std::stack<int, std::list<int>> &s, char op)
+void RPN::do_op(std::stack<double, std::list<double> > &s, char op)
 {
-	int b = s.top(); s.pop();
-	int a = s.top(); s.pop();
+	double b = s.top(); s.pop();
+	double a = s.top(); s.pop();
 
+	if (op == '/' && b == 0)
+		throw std::runtime_error("Error: division by zero");
 	if (op == '+')
 		s.push(a + b);
 	if (op == '-')
@@ -51,7 +53,7 @@ void RPN::do_op(std::stack<int, std::list<int>> &s, char op)
 
 int RPN::execute(char **argv)
 {
-	std::stack<int, std::list<int>> s;
+	std::stack<double, std::list<double> > s;
 	std::string args(argv[1]);
 
 	for (size_t i = 0; i < args.length(); i++)
@@ -68,7 +70,19 @@ int RPN::execute(char **argv)
 		else
 		{
 			if (check_operator(args[i]) && s.size() >= 2)
-				do_op(s, args[i]);
+			{
+				try
+				{
+					do_op(s, args[i]);
+				}
+				catch(const std::exception& e)
+				{
+					std::cerr << e.what() << '\n';
+					return 1;
+				}
+
+
+			}
 			else
 			{
 				std::cerr << "Error" << std::endl;
